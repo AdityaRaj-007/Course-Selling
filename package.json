@@ -8,9 +8,9 @@
     "start": "bun run src/index.ts",
     "build": "bun build ./src/index.ts --outdir ./dist --target=bun",
     "prod": "bun dist/index.js",
-    "db:migrate": "prisma migrate dev",
-    "db:studio": "prisma studio",
-    "db:generate": "prisma generate"
+    "db:migrate": "bunx --bun prisma migrate dev",
+    "db:studio": "bunx --bun prisma studio",
+    "db:generate": "bunx --bun prisma generate"
   },
   "devDependencies": {
     "@types/bcrypt": "^6.0.0",
@@ -27,6 +27,7 @@
     "@prisma/adapter-pg": "^7.7.0",
     "@prisma/client": "^7.7.0",
     "bcrypt": "^6.0.0",
+    "dotenv": "^17.4.2",
     "express": "^5.2.1",
     "jsonwebtoken": "^9.0.3",
     "pg": "^8.20.0",
