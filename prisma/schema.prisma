@@ -5,7 +5,7 @@
 
 generator client {
   provider = "prisma-client"
-  output   = "../generated/prisma"
+  output   = "../src/generated/prisma"
 }
 
 datasource db {
@@ -17,6 +17,7 @@ model User {
   email String @unique
   password String
   role Role 
+  name String
   course Course[]
   purchase Purchase[]
   createdAt DateTime @default(now())
