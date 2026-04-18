@@ -4,6 +4,7 @@ import { prisma } from "../db";
 export const getAllPurchases = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
+    const { page, limit } = req.query;
 
     if (!id || Array.isArray(id)) {
       return res.status(400).json({ message: "Invalid field" });
@@ -17,7 +18,15 @@ export const getAllPurchases = async (req: Request, res: Response) => {
       });
     }
 
-    const purchases = await prisma.purchase.findMany({ where: { userId: id } });
+    const totalPurchases = await prisma.purchase.findMany({
+      where: { userId: id },
+    });
+
+    const purchases = await prisma.purchase.findMany({
+      skip: (Number(page) - 1) * Number(limit || 10),
+      take: Number(limit || 10),
+      where: { userId: id },
+    });
 
     const purchasedCourses = [];
 
@@ -46,7 +55,14 @@ export const getAllPurchases = async (req: Request, res: Response) => {
       });
     }
 
-    return res.status(200).json(purchasedCourses);
+    const result = {
+      data: purchasedCourses,
+      total: totalPurchases.length,
+      page,
+      limit,
+    };
+
+    return res.status(200).json(result);
   } catch (err) {
     console.error(err);
     return res.status(500).json({ error: "Internal Server Error" });

@@ -35,7 +35,14 @@ export const createCourse = async (req: Request, res: Response) => {
 
 export const getAllCourses = async (req: Request, res: Response) => {
   try {
-    const courses = await prisma.course.findMany({});
+    const { page, limit } = req.query;
+
+    const totalCourses = await prisma.course.findMany({});
+
+    const courses = await prisma.course.findMany({
+      skip: (Number(page) - 1) * Number(limit || 10),
+      take: Number(limit || 10),
+    });
 
     const coursesDetails = courses.map((course) => {
       return {
@@ -46,7 +53,14 @@ export const getAllCourses = async (req: Request, res: Response) => {
       };
     });
 
-    return res.status(200).json({ coursesDetails });
+    const result = {
+      data: coursesDetails,
+      total: totalCourses.length,
+      page,
+      limit,
+    };
+
+    return res.status(200).json(result);
   } catch (err) {
     return res.status(500).json({ error: "Internal Server Error" });
   }
