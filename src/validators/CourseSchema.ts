@@ -5,3 +5,9 @@ export const CreateCourseSchema = z.object({
   description: z.string(),
   price: z.number(),
 });
+
+export const UpdateCourseSchema = z.object({
+  title: z.string(),
+  description: z.string(),
+  price: z.number(),
+});
