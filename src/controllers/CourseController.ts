@@ -155,3 +155,34 @@ export const deleteCourse = async (req: Request, res: Response) => {
     return res.status(500).json({ error: "Internal Server Error." });
   }
 };
+
+export const getCourseLessons = async (req: Request, res: Response) => {
+  try {
+    const { courseId } = req.params;
+
+    if (!courseId || Array.isArray(courseId)) {
+      return res.status(400).json({ error: "Invalid field value." });
+    }
+
+    const course = await prisma.course.findUnique({ where: { id: courseId } });
+
+    if (!course) {
+      return res.status(400).json({ message: "Course not found." });
+    }
+
+    const lessons = await prisma.lesson.findMany({ where: { courseId } });
+
+    const lessonDetails = lessons.map((lesson) => {
+      return {
+        id: lesson.id,
+        title: lesson.title,
+        content: lesson.content,
+      };
+    });
+
+    return res.status(200).json(lessonDetails);
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ error: "Internal Server Error." });
+  }
+};
